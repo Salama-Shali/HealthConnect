@@ -29,7 +29,7 @@ CREATE TABLE users (
 CREATE TABLE clinics (
     clinic_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
-    license_number VARCHAR(100) NOT NULL UNIQUE,
+    license_number VARCHAR(100) NULL UNIQUE,
     county VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL,
     contact_phone VARCHAR(20),
