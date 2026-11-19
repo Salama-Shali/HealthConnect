@@ -342,12 +342,7 @@ if ($appointmentId && $appointmentId > 0) {
             <?= date('g:i A', strtotime($appointment['end_time'])) ?>
         </p>
 
-        <div>
-            <strong>Prototype demonstration:</strong>
-            The available appointment times are simulated project data.
-            They are not the hospital's live appointment schedule.
-            Rescheduling here does not change an actual hospital booking.
-        </div>
+        
 
         <h3>Choose a New Appointment Time</h3>
 
