@@ -89,6 +89,8 @@ if (!$clinicId || $clinicId < 1) {
             <?= htmlspecialchars($clinic['address'], ENT_QUOTES, 'UTF-8') ?>
         </p>
 
+        
+
         <?php if ($slots->num_rows > 0): ?>
 
             <?php while ($slot = $slots->fetch_assoc()): ?>
