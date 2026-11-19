@@ -7,6 +7,9 @@ requireRole('patient');
 
 $patientId = currentUserId();
 $error = "";
+if(empty($_SESSION['csrf_token'])){
+       $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 $appointments = null;
 
 // Fetch appointments belonging to the logged-in patient.
@@ -57,6 +60,15 @@ $appointments = $stmt->get_result();
     <h2>My Appointments</h2>
 
     <p>View your appointment history and current bookings.</p>
+    <?php if (($_GET['cancelled'] ?? '') === '1'): ?>
+
+    <p>Appointment cancelled successfully. The slot is available again.</p>
+
+<?php elseif (($_GET['cancel_error'] ?? '') === '1'): ?>
+
+    <p>We could not cancel this appointment. It may already have been cancelled or is no longer active.</p>
+
+<?php endif; ?>
 
     <?php if ($appointments->num_rows > 0): ?>
 
@@ -118,6 +130,31 @@ $appointments = $stmt->get_result();
                     <strong>Booked On:</strong>
                     <?= date('d M Y, g:i A', strtotime($appointment['booked_at'])) ?>
                 </p>
+                <?php if ($appointment['status'] === 'booked'): ?>
+
+    <form
+        action="cancel.php"
+        method="POST"
+        onsubmit="return confirm('Are you sure you want to cancel this appointment?');"
+    >
+
+        <input
+            type="hidden"
+            name="appointment_id"
+            value="<?= (int) $appointment['appointment_id'] ?>"
+        >
+
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
+        >
+
+        <button type="submit">Cancel Appointment</button>
+
+    </form>
+
+<?php endif; ?>
 
             </section>
 
