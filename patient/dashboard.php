@@ -5,6 +5,11 @@ require_once __DIR__ . '/../includes/auth.php';
 requireRole('patient');
 
 $patientName = $_SESSION['full_name'] ?? 'Patient';
+
+// Ensure a CSRF token exists for the logout form.
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 ?>
 
 <!DOCTYPE html>
@@ -20,34 +25,49 @@ $patientName = $_SESSION['full_name'] ?? 'Patient';
 
     <h1>HealthConnect</h1>
 
-    <h2>Welcome, <?= htmlspecialchars($patientName, ENT_QUOTES, 'UTF-8') ?>!</h2>
+    <h2>
+        Welcome, <?= htmlspecialchars($patientName, ENT_QUOTES, 'UTF-8') ?>!
+    </h2>
 
-    <p>You are successfully logged in to your patient account.</p>
+    <p>Manage your clinic appointments from your patient dashboard.</p>
 
-    <h3>Patient Dashboard</h3>
+    <h3>Patient Services</h3>
 
-    <p>From here, you will be able to:</p>
+    <section>
+        <h4>Find a Clinic</h4>
+        <p>Browse verified healthcare facilities.</p>
+        <a href="clinics.php">Browse Clinics</a>
+    </section>
 
-    <ul>
-        <li>Browse verified clinics.</li>
-        <li>View available appointment slots.</li>
-        <li>Book appointments.</li>
-        <li>Reschedule or cancel appointments.</li>
-        <li>View your appointment history.</li>
-    </ul>
+    <hr>
 
-    <p>These features will be implemented in the next development stages.</p>
+    <section>
+        <h4>My Appointments</h4>
+        <p>View your bookings, check appointment details, cancel or reschedule appointments.</p>
+        <a href="appointments.php">View My Appointments</a>
+    </section>
+
+    <hr>
+
+    <section>
+        <h4>Book an Appointment</h4>
+        <p>Choose a clinic and select an available appointment time.</p>
+        <a href="clinics.php">Find an Appointment</a>
+    </section>
+
+    <hr>
+
+    <form action="../auth/logout.php" method="POST">
+
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
+        >
+
+        <button type="submit">Logout</button>
+
+    </form>
 
 </body>
-
-<form action="../auth/logout.php" method="POST">
-    <input
-        type="hidden"
-        name="csrf_token"
-        value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
-    >
-
-    <button type="submit">Logout</button>
-</form>
-
 </html>
