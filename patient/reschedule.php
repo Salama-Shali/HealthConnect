@@ -342,8 +342,6 @@ if ($appointmentId && $appointmentId > 0) {
             <?= date('g:i A', strtotime($appointment['end_time'])) ?>
         </p>
 
-        
-
         <h3>Choose a New Appointment Time</h3>
 
         <?php if ($availableSlots && $availableSlots->num_rows > 0): ?>
