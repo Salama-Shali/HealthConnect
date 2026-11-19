@@ -1,4 +1,3 @@
-
 <?php
 // HealthConnect database connection
 
