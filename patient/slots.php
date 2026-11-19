@@ -105,6 +105,10 @@ if (!$clinicId || $clinicId < 1) {
                     </p>
 
                     <p>Status: Available</p>
+
+<a href="book.php?slot_id=<?= (int) $slot['slot_id'] ?>">
+    Book This Slot
+</a>
                 </section>
 
                 <hr>
