@@ -195,6 +195,15 @@ CREATE TABLE sms_logs (
     KEY idx_sms_schedule (status, scheduled_for),
     KEY idx_sms_appointment (appointment_id, message_type),
 
+    UNIQUE KEY uq_sms_attempt (
+    appointment_id,
+    message_type,
+    attempt_number
+),
+
+CONSTRAINT chk_sms_attempt_number
+    CHECK (attempt_number BETWEEN 1 AND 4),
+
     CONSTRAINT fk_sms_appointment
         FOREIGN KEY (appointment_id)
         REFERENCES appointments(appointment_id)
