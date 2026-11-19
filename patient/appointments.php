@@ -59,14 +59,18 @@ $appointments = $stmt->get_result();
 
     <h2>My Appointments</h2>
 
-    <p>View your appointment history and current bookings.</p>
-    <?php if (($_GET['cancelled'] ?? '') === '1'): ?>
+   
+<?php if (($_GET['cancelled'] ?? '') === '1'): ?>
 
     <p>Appointment cancelled successfully. The slot is available again.</p>
 
 <?php elseif (($_GET['cancel_error'] ?? '') === '1'): ?>
 
     <p>We could not cancel this appointment. It may already have been cancelled or is no longer active.</p>
+
+<?php elseif (($_GET['rescheduled'] ?? '') === '1'): ?>
+
+    <p>Appointment rescheduled successfully. Your new appointment details are shown below.</p>
 
 <?php endif; ?>
 
@@ -131,6 +135,18 @@ $appointments = $stmt->get_result();
                     <?= date('d M Y, g:i A', strtotime($appointment['booked_at'])) ?>
                 </p>
                 <?php if ($appointment['status'] === 'booked'): ?>
+                 <?php if (
+    $appointment['status'] === 'booked' &&
+    $appointment['visit_category'] === 'ordinary'
+): ?>
+
+    <p>
+        <a href="reschedule.php?appointment_id=<?= (int) $appointment['appointment_id'] ?>">
+            Reschedule Appointment
+        </a>
+    </p>
+
+<?php endif; ?>   
 
     <form
         action="cancel.php"
