@@ -21,6 +21,7 @@ $stmt = $conn->prepare(
         a.status,
         a.booked_at,
         c.name AS clinic_name,
+        c.verification_status,
         c.county,
         c.address,
         s.start_time,
@@ -137,7 +138,8 @@ $appointments = $stmt->get_result();
                 <?php if ($appointment['status'] === 'booked'): ?>
                  <?php if (
     $appointment['status'] === 'booked' &&
-    $appointment['visit_category'] === 'ordinary'
+    $appointment['visit_category'] === 'ordinary' &&
+    $appointment['verification_status'] === 'verified'
 ): ?>
 
     <p>
