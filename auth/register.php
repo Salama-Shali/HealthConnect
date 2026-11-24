@@ -1,4 +1,3 @@
-
 <?php
 // Connect to the database and start the session.
 require_once __DIR__ . '/../config/database.php';
@@ -120,96 +119,108 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 }
+
+$pageTitle = "Patient Registration";
+$activeNav = "register";
+require_once __DIR__ . '/../includes/layout_header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Registration | HealthConnect</title>
-</head>
-
-<body>
-
-    <h1>HealthConnect</h1>
-    <h2>Create Patient Account</h2>
-
-    <p>Register to book and manage your clinic appointments.</p>
+<div class="card" style="max-width: 520px; margin: 1.5rem auto;">
+    <h1 class="page-title" style="margin-bottom: 0.35rem;">Create Patient Account</h1>
+    <p class="page-subtitle" style="margin-bottom: 1.25rem;">
+        Register to book and manage your clinic appointments.
+    </p>
 
     <?php if ($error !== ""): ?>
-        <p style="color: red;">
+        <div class="alert alert-error">
             <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
-        </p>
+        </div>
     <?php endif; ?>
 
     <?php if ($success !== ""): ?>
-        <p style="color: green;">
+        <div class="alert alert-success">
             <?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?>
-        </p>
+            <a href="login.php" style="font-weight: 600; margin-left: 0.35rem;">Log in now &rarr;</a>
+        </div>
     <?php endif; ?>
 
     <form method="POST" action="">
-
         <input
             type="hidden"
             name="csrf_token"
             value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
         >
 
-        <label for="full_name">Full Name</label><br>
-        <input
-            type="text"
-            id="full_name"
-            name="full_name"
-            value="<?= htmlspecialchars($fullName, ENT_QUOTES, 'UTF-8') ?>"
-            required
-        ><br><br>
+        <div class="form-group">
+            <label for="full_name">Full Name</label>
+            <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                class="form-control"
+                value="<?= htmlspecialchars($fullName, ENT_QUOTES, 'UTF-8') ?>"
+                required
+            >
+        </div>
 
-        <label for="email">Email Address</label><br>
-        <input
-            type="email"
-            id="email"
-            name="email"
-            value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>"
-            required
-        ><br><br>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>"
+                required
+            >
+        </div>
 
-        <label for="phone_number">Phone Number</label><br>
-        <input
-            type="tel"
-            id="phone_number"
-            name="phone_number"
-            placeholder="0712345678"
-            value="<?= htmlspecialchars($phoneInput, ENT_QUOTES, 'UTF-8') ?>"
-            required
-        ><br><br>
+        <div class="form-group">
+            <label for="phone_number">Phone Number</label>
+            <input
+                type="tel"
+                id="phone_number"
+                name="phone_number"
+                class="form-control"
+                placeholder="0712345678"
+                value="<?= htmlspecialchars($phoneInput, ENT_QUOTES, 'UTF-8') ?>"
+                required
+            >
+        </div>
 
-        <label for="password">Password</label><br>
-        <input
-            type="password"
-            id="password"
-            name="password"
-            minlength="8"
-            required
-        ><br><br>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                minlength="8"
+                required
+            >
+        </div>
 
-        <label for="confirm_password">Confirm Password</label><br>
-        <input
-            type="password"
-            id="confirm_password"
-            name="confirm_password"
-            minlength="8"
-            required
-        ><br><br>
+        <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                class="form-control"
+                minlength="8"
+                required
+            >
+        </div>
 
-        <button type="submit">Create Account</button>
-
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 1.25rem;">
+            <button type="submit" class="btn btn-primary">Create Account</button>
+            <a href="/HealthConnect/index.php" class="btn btn-secondary">&larr; Back to Home</a>
+        </div>
     </form>
 
-    <p>Already have an account?
-        <a href="login.php">Log in</a>
+    <p style="margin-top: 1.25rem; color: var(--text-muted); font-size: 0.95rem;">
+        Already have an account? <a href="login.php">Log in</a>
     </p>
+</div>
 
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/layout_footer.php'; ?>

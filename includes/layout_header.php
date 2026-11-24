@@ -24,12 +24,14 @@ $csrfToken = $_SESSION['csrf_token'];
 <body>
 
 <nav class="navbar">
-    <a href="/HealthConnect/index.php" class="navbar-brand">
-        HealthConnect
-        <?php if ($role !== 'guest'): ?>
-            <span class="role-pill"><?= htmlspecialchars(str_replace('_', ' ', $role)) ?></span>
-        <?php endif; ?>
-    </a>
+   <a href="/HealthConnect/index.php" class="navbar-brand">
+    <span class="navbar-brand-symbol" aria-hidden="true">✚</span>
+    <span>HealthConnect</span>
+
+    <?php if ($role !== 'guest'): ?>
+        <span class="role-pill"><?= htmlspecialchars(str_replace('_', ' ', $role)) ?></span>
+    <?php endif; ?>
+</a>
 
     <ul class="nav-links">
         <?php if ($role === 'clinic_staff'): ?>

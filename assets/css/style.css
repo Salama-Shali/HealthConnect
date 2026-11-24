@@ -66,6 +66,20 @@ body {
   gap: 0.5rem;
 }
 
+.navbar-brand-symbol {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.18);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-family: "Segoe UI Symbol", sans-serif;
+    font-size: 25px;
+    line-height: 1;
+}
+
 .role-pill {
   font-size: 0.72rem;
   text-transform: uppercase;

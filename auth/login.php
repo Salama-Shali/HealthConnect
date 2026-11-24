@@ -85,62 +85,75 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 }
+
+$pageTitle = "Login";
+$activeNav = "login";
+require_once __DIR__ . '/../includes/layout_header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<div class="card" style="max-width: 480px; margin: 1.5rem auto;">
+    <h1 class="page-title" style="margin-bottom: 0.35rem;">Login to Your Account</h1>
+    <p class="page-subtitle" style="margin-bottom: 1.25rem;">
+        Welcome back! Please enter your login details.
+    </p>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | HealthConnect</title>
-</head>
+    <?php if (isset($_GET['logged_out']) && $_GET['logged_out'] === '1'): ?>
+        <div class="alert alert-success">
+            You have been logged out successfully.
+        </div>
+    <?php endif; ?>
 
-<body>
-
-    <h1>HealthConnect</h1>
-    <h2>Login to Your Account</h2>
-
-    <p>Welcome back! Please enter your login details.</p>
+    <?php if (isset($_GET['registered']) && $_GET['registered'] === '1'): ?>
+        <div class="alert alert-success">
+            Registration successful! Please log in with your credentials.
+        </div>
+    <?php endif; ?>
 
     <?php if ($error !== ""): ?>
-        <p style="color: red;">
+        <div class="alert alert-error">
             <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
-        </p>
+        </div>
     <?php endif; ?>
 
     <form method="POST" action="">
-
         <input
             type="hidden"
             name="csrf_token"
             value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
         >
 
-        <label for="email">Email Address</label><br>
-        <input
-            type="email"
-            id="email"
-            name="email"
-            value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>"
-            required
-        ><br><br>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-control"
+                value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>"
+                required
+            >
+        </div>
 
-        <label for="password">Password</label><br>
-        <input
-            type="password"
-            id="password"
-            name="password"
-            required
-        ><br><br>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                required
+            >
+        </div>
 
-        <button type="submit">Login</button>
-
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 1.25rem;">
+            <button type="submit" class="btn btn-primary">Login</button>
+            <a href="/HealthConnect/index.php" class="btn btn-secondary">&larr; Back to Home</a>
+        </div>
     </form>
 
-    <p>Don't have an account?
-        <a href="register.php">Register here</a>
+    <p style="margin-top: 1.25rem; color: var(--text-muted); font-size: 0.95rem;">
+        Don't have an account? <a href="register.php">Register here</a>
     </p>
+</div>
 
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/layout_footer.php'; ?>

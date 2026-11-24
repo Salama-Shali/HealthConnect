@@ -298,114 +298,94 @@ if ($appointmentId && $appointmentId > 0) {
 
     $error = "Invalid appointment selected.";
 }
+
+$pageTitle = "Reschedule Appointment";
+$activeNav = "appointments";
+require_once __DIR__ . '/../includes/patient_layout_header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title">Reschedule Appointment</h1>
+        <p class="page-subtitle">Select a new available time slot for your clinic visit.</p>
+    </div>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a href="appointments.php" class="btn btn-secondary">Back to My Appointments</a>
+        <a href="dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reschedule Appointment | HealthConnect</title>
-</head>
-
-<body>
-
-    <h1>HealthConnect</h1>
-
-    <h2>Reschedule Appointment</h2>
-
+<div class="card" style="max-width: 580px; margin: 0 auto;">
     <?php if ($error !== ""): ?>
-
-        <p><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
-
+        <div class="alert alert-error">
+            <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+        </div>
     <?php endif; ?>
 
     <?php if ($appointment): ?>
+        <h3 style="margin-bottom: 0.85rem; color: var(--primary);">Current Appointment</h3>
 
-        <h3>Current Appointment</h3>
+        <div style="display: grid; gap: 0.55rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.95rem;">
+            <div>
+                <strong>Clinic:</strong>
+                <?= htmlspecialchars($appointment['clinic_name'], ENT_QUOTES, 'UTF-8') ?>
+            </div>
+            <div>
+                <strong>Current Date:</strong>
+                <?= date('l, d M Y', strtotime($appointment['appointment_date'])) ?>
+            </div>
+            <div>
+                <strong>Current Time:</strong>
+                <?= date('g:i A', strtotime($appointment['start_time'])) ?> &ndash;
+                <?= date('g:i A', strtotime($appointment['end_time'])) ?>
+            </div>
+        </div>
 
-        <p>
-            <strong>Clinic:</strong>
-            <?= htmlspecialchars($appointment['clinic_name'], ENT_QUOTES, 'UTF-8') ?>
-        </p>
-
-        <p>
-            <strong>Current Date:</strong>
-            <?= date('l, d M Y', strtotime($appointment['appointment_date'])) ?>
-        </p>
-
-        <p>
-            <strong>Current Time:</strong>
-            <?= date('g:i A', strtotime($appointment['start_time'])) ?>
-            -
-            <?= date('g:i A', strtotime($appointment['end_time'])) ?>
-        </p>
-
-        <h3>Choose a New Appointment Time</h3>
+        <h3 style="margin-bottom: 0.85rem; color: var(--primary);">Choose a New Appointment Time</h3>
 
         <?php if ($availableSlots && $availableSlots->num_rows > 0): ?>
-
             <form method="POST" action="reschedule.php">
-
                 <input
                     type="hidden"
                     name="appointment_id"
                     value="<?= (int) $appointment['appointment_id'] ?>"
                 >
-
                 <input
                     type="hidden"
                     name="csrf_token"
                     value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
                 >
 
-                <label for="new_slot_id">Available Slots</label><br>
+                <div class="form-group">
+                    <label for="new_slot_id">Available Slots</label>
+                    <select id="new_slot_id" name="new_slot_id" class="form-control" required>
+                        <option value="">Select a new slot</option>
+                        <?php while ($newSlot = $availableSlots->fetch_assoc()): ?>
+                            <option value="<?= (int) $newSlot['slot_id'] ?>">
+                                <?= date('d M Y', strtotime($newSlot['slot_date'])) ?> &mdash;
+                                <?= date('g:i A', strtotime($newSlot['start_time'])) ?> to
+                                <?= date('g:i A', strtotime($newSlot['end_time'])) ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
 
-                <select id="new_slot_id" name="new_slot_id" required>
-
-                    <option value="">Select a new slot</option>
-
-                    <?php while ($newSlot = $availableSlots->fetch_assoc()): ?>
-
-                        <option value="<?= (int) $newSlot['slot_id'] ?>">
-
-                            <?= date('d M Y', strtotime($newSlot['slot_date'])) ?>
-                            —
-                            <?= date('g:i A', strtotime($newSlot['start_time'])) ?>
-                            to
-                            <?= date('g:i A', strtotime($newSlot['end_time'])) ?>
-
-                        </option>
-
-                    <?php endwhile; ?>
-
-                </select>
-
-                <br><br>
-
-                <button type="submit">
-                    Confirm Rescheduling
-                </button>
-
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.25rem;">
+                    <button type="submit" class="btn btn-primary">Confirm Rescheduling</button>
+                    <a href="appointments.php" class="btn btn-secondary">Cancel</a>
+                </div>
             </form>
-
         <?php else: ?>
-
-            <p>No other future appointment slots are currently available at this clinic.</p>
-
+            <p style="color: var(--text-muted);">
+                No other future appointment slots are currently available at this clinic.
+            </p>
         <?php endif; ?>
-
     <?php endif; ?>
+</div>
 
-    <?php
-    if ($availableSlots) {
-        $slotStmt->close();
-    }
-    ?>
-
-    <p><a href="appointments.php">Back to My Appointments</a></p>
-    <p><a href="dashboard.php">Back to Dashboard</a></p>
-
-</body>
-</html>
+<?php
+if ($availableSlots) {
+    $slotStmt->close();
+}
+require_once __DIR__ . '/../includes/patient_layout_footer.php';
+?>
