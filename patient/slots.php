@@ -57,76 +57,68 @@ if (!$clinicId || $clinicId < 1) {
         $slots = $slotStmt->get_result();
     }
 }
+
+$pageTitle = "Available Slots";
+$activeNav = "clinics";
+require_once __DIR__ . '/../includes/layout_header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Available Slots | HealthConnect</title>
-</head>
-
-<body>
-
-    <h1>HealthConnect</h1>
-
-    <?php if ($error): ?>
-
-        <p><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
-
-    <?php else: ?>
-
-        <h2>Available Appointment Slots</h2>
-
-        <h3>
-            <?= htmlspecialchars($clinic['name'], ENT_QUOTES, 'UTF-8') ?>
-        </h3>
-
-        <p>
-            <?= htmlspecialchars($clinic['county'], ENT_QUOTES, 'UTF-8') ?> |
-            <?= htmlspecialchars($clinic['address'], ENT_QUOTES, 'UTF-8') ?>
-        </p>
-  
-        <?php if ($slots->num_rows > 0): ?>
-
-            <?php while ($slot = $slots->fetch_assoc()): ?>
-
-                <section>
-                    <h4>
-                        <?= date('l, d M Y', strtotime($slot['slot_date'])) ?>
-                    </h4>
-
-                    <p>
-                        <?= date('g:i A', strtotime($slot['start_time'])) ?>
-                        -
-                        <?= date('g:i A', strtotime($slot['end_time'])) ?>
-                    </p>
-
-                    <p>Status: Available</p>
-
-<a href="book.php?slot_id=<?= (int) $slot['slot_id'] ?>">
-    Book This Slot
-</a>
-                </section>
-
-                <hr>
-
-            <?php endwhile; ?>
-
-        <?php else: ?>
-
-            <p>No future appointment slots are currently available at this clinic.</p>
-
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title">Available Appointment Slots</h1>
+        <?php if ($clinic): ?>
+            <p class="page-subtitle">
+                <strong><?= htmlspecialchars($clinic['name'], ENT_QUOTES, 'UTF-8') ?></strong> &bull;
+                <?= htmlspecialchars($clinic['county'], ENT_QUOTES, 'UTF-8') ?>,
+                <?= htmlspecialchars($clinic['address'], ENT_QUOTES, 'UTF-8') ?>
+            </p>
         <?php endif; ?>
+    </div>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a href="clinics.php" class="btn btn-secondary">Back to Clinics</a>
+        <a href="dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
 
-        <?php $slotStmt->close(); ?>
-
+<?php if ($error): ?>
+    <div class="alert alert-error">
+        <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+    </div>
+<?php else: ?>
+    <?php if ($slots->num_rows > 0): ?>
+        <div class="stats-grid">
+            <?php while ($slot = $slots->fetch_assoc()): ?>
+                <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <h3 style="margin: 0; font-size: 1.05rem; color: var(--primary);">
+                                <?= date('l, d M Y', strtotime($slot['slot_date'])) ?>
+                            </h3>
+                            <span class="badge badge-success">Available</span>
+                        </div>
+                        <p style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem;">
+                            <?= date('g:i A', strtotime($slot['start_time'])) ?> &ndash;
+                            <?= date('g:i A', strtotime($slot['end_time'])) ?>
+                        </p>
+                    </div>
+                    <div>
+                        <a href="book.php?slot_id=<?= (int) $slot['slot_id'] ?>" class="btn btn-primary">
+                            Book This Slot
+                        </a>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        </div>
+    <?php else: ?>
+        <div class="card" style="text-align: center; padding: 2rem;">
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                No future appointment slots are currently available at this clinic.
+            </p>
+            <a href="clinics.php" class="btn btn-primary">Browse Other Clinics</a>
+        </div>
     <?php endif; ?>
 
-    <p><a href="clinics.php">Back to Clinics</a></p>
-    <p><a href="dashboard.php">Back to Dashboard</a></p>
+    <?php $slotStmt->close(); ?>
+<?php endif; ?>
 
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/layout_footer.php'; ?>

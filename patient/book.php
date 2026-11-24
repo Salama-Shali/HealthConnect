@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
@@ -185,125 +184,118 @@ if (!$confirmation && $slotId = filter_var(
     $stmt->close();
 }
 
+$pageTitle = "Book Appointment";
+$activeNav = "clinics";
+require_once __DIR__ . '/../includes/layout_header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Appointment | HealthConnect</title>
-</head>
-
-<body>
-
-    <h1>HealthConnect</h1>
-
-    <?php if ($confirmation): ?>
-
-        <h2>Appointment Booked Successfully!</h2>
-
-        <p>Your appointment has been recorded.</p>
-
-        <p>
-            <strong>Appointment Number:</strong>
-            <?= (int) $confirmation['appointment_id'] ?>
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title"><?= $confirmation ? 'Appointment Booked!' : 'Confirm Your Appointment' ?></h1>
+        <p class="page-subtitle">
+            <?= $confirmation ? 'Your clinic visit has been scheduled.' : 'Review the slot details below before confirming your booking.' ?>
         </p>
+    </div>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a href="clinics.php" class="btn btn-secondary">Browse Clinics</a>
+        <a href="dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
 
-        <p>
-            <strong>Clinic:</strong>
-            <?= htmlspecialchars($confirmation['clinic_name'], ENT_QUOTES, 'UTF-8') ?>
-        </p>
+<?php if ($confirmation): ?>
+    <div class="card" style="max-width: 580px; margin: 0 auto;">
+        <div class="alert alert-success">
+            Appointment booked successfully! Your appointment has been recorded.
+        </div>
 
-        <p>
-            <strong>Date:</strong>
-            <?= date('l, d M Y', strtotime($confirmation['slot_date'])) ?>
-        </p>
+        <div style="display: grid; gap: 0.65rem; margin: 1.25rem 0; font-size: 0.95rem;">
+            <div>
+                <strong>Appointment Number:</strong>
+                #<?= (int) $confirmation['appointment_id'] ?>
+            </div>
+            <div>
+                <strong>Clinic:</strong>
+                <?= htmlspecialchars($confirmation['clinic_name'], ENT_QUOTES, 'UTF-8') ?>
+            </div>
+            <div>
+                <strong>Date:</strong>
+                <?= date('l, d M Y', strtotime($confirmation['slot_date'])) ?>
+            </div>
+            <div>
+                <strong>Time:</strong>
+                <?= date('g:i A', strtotime($confirmation['start_time'])) ?> &ndash;
+                <?= date('g:i A', strtotime($confirmation['end_time'])) ?>
+            </div>
+            <div>
+                <strong>Status:</strong>
+                <span class="badge badge-info">Booked</span>
+            </div>
+        </div>
 
-        <p>
-            <strong>Time:</strong>
-            <?= date('g:i A', strtotime($confirmation['start_time'])) ?>
-            -
-            <?= date('g:i A', strtotime($confirmation['end_time'])) ?>
-        </p>
-
-        <p><strong>Status:</strong> Booked</p>
-
-        <p>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
             SMS confirmation will be handled through the SMS integration.
         </p>
 
-        <a href="clinics.php">Browse More Clinics</a>
-
-    <?php else: ?>
-
-        <h2>Confirm Your Appointment</h2>
-
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="appointments.php" class="btn btn-primary">View My Appointments</a>
+            <a href="clinics.php" class="btn btn-secondary">Browse More Clinics</a>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="card" style="max-width: 580px; margin: 0 auto;">
         <?php if ($error !== ""): ?>
-            <p style="color: red;">
+            <div class="alert alert-error">
                 <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
-            </p>
+            </div>
         <?php endif; ?>
 
         <?php if ($slot): ?>
+            <h3 style="margin-bottom: 1rem; color: var(--primary);">Appointment Details</h3>
 
-            <h3>Appointment Details</h3>
+            <div style="display: grid; gap: 0.65rem; margin-bottom: 1.5rem; font-size: 0.95rem;">
+                <div>
+                    <strong>Clinic:</strong>
+                    <?= htmlspecialchars($slot['clinic_name'], ENT_QUOTES, 'UTF-8') ?>
+                </div>
+                <div>
+                    <strong>Location:</strong>
+                    <?= htmlspecialchars($slot['county'], ENT_QUOTES, 'UTF-8') ?>,
+                    <?= htmlspecialchars($slot['address'], ENT_QUOTES, 'UTF-8') ?>
+                </div>
+                <div>
+                    <strong>Date:</strong>
+                    <?= date('l, d M Y', strtotime($slot['slot_date'])) ?>
+                </div>
+                <div>
+                    <strong>Time:</strong>
+                    <?= date('g:i A', strtotime($slot['start_time'])) ?> &ndash;
+                    <?= date('g:i A', strtotime($slot['end_time'])) ?>
+                </div>
+            </div>
 
-            <p>
-                <strong>Clinic:</strong>
-                <?= htmlspecialchars($slot['clinic_name'], ENT_QUOTES, 'UTF-8') ?>
-            </p>
-
-            <p>
-                <strong>Location:</strong>
-                <?= htmlspecialchars($slot['county'], ENT_QUOTES, 'UTF-8') ?>,
-                <?= htmlspecialchars($slot['address'], ENT_QUOTES, 'UTF-8') ?>
-            </p>
-
-            <p>
-                <strong>Date:</strong>
-                <?= date('l, d M Y', strtotime($slot['slot_date'])) ?>
-            </p>
-
-            <p>
-                <strong>Time:</strong>
-                <?= date('g:i A', strtotime($slot['start_time'])) ?>
-                -
-                <?= date('g:i A', strtotime($slot['end_time'])) ?>
-            </p>
-
-            <form method="POST" action="book.php">
-
+            <form method="POST" action="book.php" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
                 <input
                     type="hidden"
                     name="slot_id"
                     value="<?= (int) $slot['slot_id'] ?>"
                 >
-
                 <input
                     type="hidden"
                     name="csrf_token"
                     value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>"
                 >
-
-                <button type="submit">Confirm Booking</button>
-
+                <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                <a href="clinics.php" class="btn btn-secondary">Cancel</a>
             </form>
-
         <?php else: ?>
-
             <?php if ($error === ""): ?>
-                <p>This appointment slot is unavailable or no longer exists.</p>
+                <div class="alert alert-error">
+                    This appointment slot is unavailable or no longer exists.
+                </div>
             <?php endif; ?>
-
-            <p><a href="clinics.php">Return to Clinics</a></p>
-
+            <a href="clinics.php" class="btn btn-primary">Return to Clinics</a>
         <?php endif; ?>
+    </div>
+<?php endif; ?>
 
-    <?php endif; ?>
-
-    <p><a href="dashboard.php">Back to Dashboard</a></p>
-
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/layout_footer.php'; ?>
