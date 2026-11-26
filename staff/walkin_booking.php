@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/sms.php';
 
 requireRole('clinic_staff');
 
@@ -138,9 +139,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'regis
         if (!$insAppt->execute()) {
             throw new Exception("Failed to create walk-in appointment.");
         }
+        $newAppointmentId = (int) $conn->insert_id;
         $insAppt->close();
 
         $conn->commit();
+
+        // Send the confirmation SMS (never blocks the registration).
+        sendBookingConfirmationSms($conn, $newAppointmentId);
         $_SESSION['flash_success'] = "Walk-in registered for {$fullName} (Queue #{$nextQueue}).";
         header("Location: /HealthConnect/staff/dashboard.php");
         exit;

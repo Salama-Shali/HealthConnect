@@ -2,6 +2,7 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/sms.php';
 
 // Only logged-in patients can book appointments.
 requireRole('patient');
@@ -123,6 +124,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Complete the transaction.
                     $conn->commit();
 
+                    // Send the booking confirmation SMS (never blocks the booking).
+                    sendBookingConfirmationSms($conn, (int) $appointmentId);
+
                     // Save confirmation details for the next page request.
                     $_SESSION['booking_confirmation'] = [
                         'appointment_id' => $appointmentId,
@@ -231,7 +235,7 @@ if (!$confirmation && $slotId = filter_var(
         <p><strong>Status:</strong> Booked</p>
 
         <p>
-            SMS confirmation will be handled through the SMS integration.
+            A confirmation SMS is on its way to your phone. If it does not arrive, your booking is still valid.
         </p>
 
         <a href="clinics.php">Browse More Clinics</a>

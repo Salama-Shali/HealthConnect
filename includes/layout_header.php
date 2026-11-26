@@ -60,9 +60,11 @@ $csrfToken = $_SESSION['csrf_token'];
             </li>
 
         <?php elseif ($role === 'admin'): ?>
+            <li><a href="/HealthConnect/admin/dashboard.php" class="<?= $activeNav === 'dashboard' ? 'active' : '' ?>">Dashboard</a></li>
             <li><a href="/HealthConnect/admin/clinics.php" class="<?= $activeNav === 'clinics' ? 'active' : '' ?>">Verify Clinics</a></li>
             <li><a href="/HealthConnect/admin/users.php" class="<?= $activeNav === 'users' ? 'active' : '' ?>">Manage Users</a></li>
             <li><a href="/HealthConnect/admin/reports.php" class="<?= $activeNav === 'reports' ? 'active' : '' ?>">System Reports</a></li>
+            <li><a href="/HealthConnect/admin/sms_log.php" class="<?= $activeNav === 'sms' ? 'active' : '' ?>">SMS Log</a></li>
             <li>
                 <form method="POST" action="/HealthConnect/auth/logout.php" style="display:inline;">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
